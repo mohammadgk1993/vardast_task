@@ -1,0 +1,20 @@
+{
+  "name": "vardast_task",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./build/js/main.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.4",
+    "@types/mocha": "^10.0.1",
+    "babel-jest": "^29.6.3",
+    "jest": "^29.6.3",
+    "mocha": "^10.2.0",
+    "ts-jest": "^29.1.1"
+  }
+}

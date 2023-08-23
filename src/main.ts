@@ -5,7 +5,7 @@ string word by word and set them to the map we except of using regexp.match
 method for all of each word matches we decreased our memory use and as a
 result we can handle large strings efficiently */
 
-function topThreeWords(str: string): string[] {
+export function topThreeWords(str: string): string[] {
     if (!str) return []        // If the input string is empty or consists only of spaces, return an empty array
     
     let allWords: Map<string, number> = new Map()      // Create a map to store word frequencies
