@@ -1,31 +1,44 @@
-let str1:string = "In a village of La Mancha, the name of which I have no desire to call to mind, there lived not long since one of those gentlemen that keep a lance in the lance-rack, an old buckler, a lean hack, and a greyhound for coursing. An olla of rather more beef than mutton, a salad on most nights, scraps on Saturdays, lentils on Fridays, and a pigeon or so extra on Sundays, made away with three-quarters of his income."
+/* our solution to optimize this function to work better and decrease
+memory usage is to use map except of the array to store key-value pairs 
+of [string(Word): number(Times that word repeated)] by iterating over
+string word by word and set them to the map we except of using regexp.match
+method for all of each word matches we decreased our memory use and as a
+result we can handle large strings efficiently */
 
 function topThreeWords(str: string): string[] {
-    if (!str) return []                                                   // if we recieve an empty string so we return and empty array
-    let allWords: [string, number][] = []                                 // make an array to hold all words and their repeats in pairs
-    /* remove ponctuations marks except of qoutation and double qoutation (', "")
-    and then convert all of string in to lowerCase */
-    let filteredString: string = str.trim().toLowerCase().replace(/(['"])\1+|[~`!@#$%^&*()-_=+{}|\:;<>,.?/]/g,'')
-    // remove extra white spaces such as double spaces and tabs and line breaks
-    filteredString = filteredString.replace(/\s+/g, ' ')
+    if (!str) return []        // If the input string is empty or consists only of spaces, return an empty array
+    
+    let allWords: Map<string, number> = new Map()      // Create a map to store word frequencies
+    let filteredString: string = str.toLowerCase()         // Convert the input string to lowercase
 
-    loop1: for (let word of filteredString.split(' ')) {                  // we push arrays which containing of each word and it's repeat
-        if (word == "'" || word == '"') continue
-        let counter: number = 0                                           // counts how many times word this is repeated
-        loop2: for (let arr of allWords) {                                // if allWord array contain of this word we skip our loop to the next word
-            if (arr[0] === word) continue loop1
-        }
-
-        for (let phrase of filteredString.split(' ')) {                   // this loop count how many times word is repeated with counter variable
-            if (word == phrase) counter += 1
-        }
-
-        allWords.push([word, counter])
+    // Loop through each word in the filtered string (split by spaces)
+    for (let word of filteredString.split(' ')) {
+        const filteredString: string = word
+        .replace(/(['"])\1+|[~`!@#$%^&*()-_=+{}|\:;<>,.?/]/g,' ')
+        .trim() // delete ponctuations marks if it's next to a word
+        
+        if (filteredString.replace(/(["'])\1+/g,'') == '') continue;      // Skip if the word contains only repeated quotes
+        if (filteredString.match(/[a-z'"]/g)) {       // If the word contains lowercase letters, apostrophes, or quotes
+            const count: number = allWords.get(filteredString) || 0      // Get the current count for the word from the map
+            allWords.set(filteredString, count + 1)      // Increment the word count in the map
+        } else continue         // Skip if the word doesn't match the allowed characters
     }
     
-    allWords.sort((a:[string, number], b:[string, number]): number => b[1] - a[1])   // sort array pairs decending by their second element
-    return allWords.slice(0,3).map(val => val[0])                         // return first three most repeated words as an array
+    /* Convert the map entries to an array of [word, count] pairs,
+    sort it based on count in descending order, take the top 3,
+    and extract only the words into a new array */
+    let sortedWords: [string, number][] = Array
+        .from(allWords.entries())
+        .sort((pair1: [string, number], pair2: [string, number]): number => pair2[1] - pair1[1]);
+    
+    return sortedWords.slice(0, 3).map((pair: [string, number]): string => pair[0]); // Return the top 3 words
 }
 
 
-console.log(topThreeWords(str1))
+console.log(topThreeWords(`In a village of La Mancha, the name of which I have no desire to call
+ to mind, there lived not long since one of those gentlemen that keep
+a lance in the lance-rack, an old buckler, a lean hack, and a greyhound for coursing. An olla of rather more beef than mutton,
+a salad on most nights, scraps on Saturdays, lentils on Fridays, and a pigeon
+or so extra on Sundays, made away with three-quarters of his income.`))
+console.log(topThreeWords("e e e e DDD ddd DdD: ddd ddd aa aA Aa, bb cc cC e e e"))
+console.log(topThreeWords(" //wont won't won't"))
